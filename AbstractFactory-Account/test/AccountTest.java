@@ -64,3 +64,91 @@ public class AccountTest {
 	}
 
 }
+
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
+
+class CellTest {
+    Cell cell;
+
+    @BeforeEach
+    void setUp() {
+        cell = new Cell();
+    }
+
+    @Test
+    void testCreatedCellIsEmpty() {
+        assertTrue(cell.isCellEmpty());
+    }
+
+    @Test
+    void testSetMark_checkIfCanMarkX() throws CellAlreadyMarkedException {
+        cell.setMark(MarkType.X);
+        assertEquals(MarkType.X, cell.getMark());
+    }
+
+    @Test
+    void testSetMark_checkIfCanMarkO() throws CellAlreadyMarkedException {
+        cell.setMark(MarkType.O);
+        assertEquals(MarkType.O, cell.getMark());
+    }
+
+    @Test
+    void testSetMark_throwsCellAlreadyMarkedExceptionWhenMarkedTwice() {
+        assertThrows(CellAlreadyMarkedException.class, () -> {
+            cell.setMark(MarkType.X);
+            cell.setMark(MarkType.O);
+        });
+    }
+}
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
+
+class BoardTest {
+    Board board;
+
+    @BeforeEach
+    void setUp() {
+        board = new Board();
+    }
+
+    @Test
+    void testCreateBoard_allNineCellsAreEmpty() {
+        for (Cell cell : board.getCells()) {
+            assertTrue(cell.isCellEmpty());
+        }
+    }
+
+    @Test
+    void testSetCellMark_ableToMarkAtSpecificLocation() throws CellAlreadyMarkedException {
+        board.setCellMark(0, MarkType.X);
+        assertEquals(MarkType.X, board.getCells()[0].getMark());
+    }
+
+    @Test
+    void testSetCellMark_throwsInvalidLocationExceptionForInvalidCellLocation() {
+        assertThrows(IllegalArgumentException.class, () -> {
+            board.setCellMark(9, MarkType.X);
+        });
+    }
+
+    @Test
+    void testIsBoardFull_checkTrueIfBoardIsFull() throws CellAlreadyMarkedException {
+        for (int i = 0; i < 9; i++) {
+            board.setCellMark(i, MarkType.X);
+        }
+        assertTrue(board.isBoardFull());
+    }
+
+    @Test
+    void testSetCellMark_throwsCellAlreadyMarkedExceptionIfCellMarkedTwice() {
+        assertThrows(CellAlreadyMarkedException.class, () -> {
+            board.setCellMark(0, MarkType.X);
+            board.setCellMark(0, MarkType.O);
+        });
+    }
+}
+
